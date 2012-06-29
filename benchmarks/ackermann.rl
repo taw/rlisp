@@ -1,0 +1,8 @@
+(defun ack (m n)
+    (cond (eq? m 0) (+ n 1)
+          (eq? n 0) (ack (- m 1) 1)
+                    (ack (- m 1) (ack m (- n 1)))
+    )
+)
+(let num [[ARGV shift] to_i])
+(print "Ack(3," num "): " (ack 3 num))

@@ -1,0 +1,36 @@
+rlisp (0.1.20070617) unstable; urgency=low
+
+  * Upstream update
+  
+ -- Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>  Sun, 17 Jun 2007 07:20:18 +0200
+   
+rlisp (0.1.20070603) unstable; urgency=low
+
+  * Upstream update
+  
+ -- Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>  Sun, 03 Jun 2007 20:32:50 +0200
+   
+rlisp (0.1.20070601) unstable; urgency=low
+
+  * Upstream update
+  
+ -- Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>  Fri, 01 Jun 2007 22:17:13 +0200
+   
+rlisp (0.1.20070529) unstable; urgency=low
+
+  * Upstream update
+  
+ -- Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>  Tue, 29 May 2007 17:13:48 +0200
+   
+rlisp (0.1.20070528) unstable; urgency=low
+
+  * Upstream update
+
+ -- Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>  Fri, 28 May 2007 02:01:00 +0200
+
+rlisp (0.1.20070525) unstable; urgency=low
+
+  * Initial release
+
+ -- Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>  Fri, 25 May 2007 13:53:59 +0200
+

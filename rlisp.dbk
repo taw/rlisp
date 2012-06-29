@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+  "/usr/share/xml/docbook/schema/dtd/4.4/docbookx.dtd">
+
+<refentry>
+  <refentryinfo>
+    <address>Tomasz.Wegrzanowski@gmail.com</address>
+<!--    <author><firstname>Tomasz</firstname> <surname>Węgrzanowski</surname></author> -->
+    <copyright>
+      <year>2007</year>
+      <holder>Tomasz Węgrzanowski</holder>
+    </copyright>
+    <date>Jun 07, 2007</date>
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>RLISP</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+  <refnamediv>
+    <refname>rlisp</refname>
+    <refpurpose>Lisp naturally integrated with Ruby</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>rlisp</command>
+      
+      <arg><option>-h</option></arg>
+      <arg><option>--help</option></arg>
+
+      <arg><option>-v</option></arg>
+      <arg><option>--version</option></arg>
+
+      <arg><option>-i</option></arg>
+      <arg><option>--interactive</option></arg>
+
+      <arg><option>-b</option></arg>
+      <arg><option>--batch</option></arg>
+
+      <arg><option>-n</option></arg>
+      <arg><option>--nostdlib</option></arg>
+
+      <arg><option>-r</option></arg>
+      <arg><option>--recompile</option></arg>
+
+      <arg><option>-d</option></arg>
+      <arg><option>--debug</option></arg>
+
+      <arg><option>-e</option> command</arg>
+      
+      <arg>file</arg>
+      <arg>argument ...</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+    
+    <para>RLisp is Lisp "naturally integrated" with Ruby. It tries to be Lisp and Ruby at the same time.</para>
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+
+    <para>These programs follow the usual GNU command line syntax,
+      with long options starting with two dashes (`-').  A summary of
+      options is included below.</para>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option></term>
+        <term><option>--help</option></term>
+        <listitem>
+          <para>Show summary of options.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-v</option></term>
+        <term><option>--version</option></term>
+        <listitem>
+          <para>Show version.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-i</option></term>
+        <term><option>--interactive</option></term>
+        <listitem>
+          <para>Run in interactive mode.</para>
+        </listitem>
+      </varlistentry>
+      <varlistentry>
+        <term><option>-b</option></term>
+        <term><option>--batch</option></term>
+        <listitem>
+          <para>Run in batch mode.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-n</option></term>
+        <term><option>--nostdlib</option></term>
+        <listitem>
+          <para>Do not use stdlib.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-r</option></term>
+        <term><option>--recompile</option></term>
+        <listitem>
+          <para>Recompile libraries used.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-d</option></term>
+        <term><option>--debug</option></term>
+        <listitem>
+          <para>Turn on debug mode.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-e <replaceable>command</replaceable></option></term>
+        <listitem>
+          <para>Execute <replaceable>command</replaceable>.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>ENVIRONMENT</title>
+
+    <para>The following environment variables affect RLisp</para>
+    <variablelist>
+      <varlistentry>
+        <term><envar>RLISP_PATH</envar></term>
+        <listitem>
+          <para>Search for required libraries in the path if they cannot be found in current directory.
+                By default <filename>/usr/lib/rlisp</filename> and <filename>/usr/local/lib/rlisp</filename> are searched.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>SEE ALSO</title>
+
+    <para>ruby (1).</para>
+  </refsect1>
+</refentry>

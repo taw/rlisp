@@ -1,0 +1,83 @@
+.\"     Title: RLISP
+.\"    Author: 
+.\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
+.\"      Date: Jun 07, 2007
+.\"    Manual: 
+.\"    Source: 
+.\"
+.TH "RLISP" "1" "Jun 07, 2007" "" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+rlisp \- Lisp naturally integrated with Ruby
+.SH "SYNOPSIS"
+.HP 6
+\fBrlisp\fR [\fB\-h\fR] [\fB\-\-help\fR] [\fB\-v\fR] [\fB\-\-version\fR] [\fB\-i\fR] [\fB\-\-interactive\fR] [\fB\-b\fR] [\fB\-\-batch\fR] [\fB\-n\fR] [\fB\-\-nostdlib\fR] [\fB\-r\fR] [\fB\-\-recompile\fR] [\fB\-d\fR] [\fB\-\-debug\fR] [\fB\-e\fR\ command] [file] [argument\ ...]
+.SH "DESCRIPTION"
+.PP
+RLisp is Lisp "naturally integrated" with Ruby. It tries to be Lisp and Ruby at the same time.
+.SH "OPTIONS"
+.PP
+These programs follow the usual GNU command line syntax, with long options starting with two dashes (`\-'). A summary of options is included below.
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 3n
+Show summary of options.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-version\fR
+.RS 3n
+Show version.
+.RE
+.PP
+\fB\-i\fR, \fB\-\-interactive\fR
+.RS 3n
+Run in interactive mode.
+.RE
+.PP
+\fB\-b\fR, \fB\-\-batch\fR
+.RS 3n
+Run in batch mode.
+.RE
+.PP
+\fB\-n\fR, \fB\-\-nostdlib\fR
+.RS 3n
+Do not use stdlib.
+.RE
+.PP
+\fB\-r\fR, \fB\-\-recompile\fR
+.RS 3n
+Recompile libraries used.
+.RE
+.PP
+\fB\-d\fR, \fB\-\-debug\fR
+.RS 3n
+Turn on debug mode.
+.RE
+.PP
+\fB\-e \fR\fB\fIcommand\fR\fR
+.RS 3n
+Execute
+\fIcommand\fR.
+.RE
+.SH "ENVIRONMENT"
+.PP
+The following environment variables affect RLisp
+.PP
+\fBRLISP_PATH\fR
+.RS 3n
+Search for required libraries in the path if they cannot be found in current directory. By default
+\fI/usr/lib/rlisp\fR
+and
+\fI/usr/local/lib/rlisp\fR
+are searched.
+.RE
+.SH "SEE ALSO"
+.PP
+ruby (1).
+.SH "COPYRIGHT"
+Copyright \(co 2007 Tomasz Węgrzanowski
+.br
+

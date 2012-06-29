@@ -1,0 +1,13 @@
+Source: rlisp
+Section: interpreters
+Priority: optional
+Maintainer: Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: rlisp
+Architecture: any
+Depends: ruby1.8 (>=1.8.4), ${shlibs:Depends}, ${misc:Depends}
+Description: Lisp naturally integrated with Ruby
+ RLisp is a Lisp with full access to Ruby virtual machine,
+ or from other point of view Ruby with Lisp macros.

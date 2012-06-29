@@ -1,0 +1,7 @@
+(defun bar ()
+  (ruby-eval "raise 'A test exception'")
+)
+(defun foo ()
+  (map (fn () (bar)) '(1))
+)
+(foo)
