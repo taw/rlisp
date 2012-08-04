@@ -7,7 +7,7 @@ Usage
 =====
 
 Tests in tests/ and examples in examples/ are about the only documentation.
-You can also check rlisp-related posts on my blog at http://t-a-w.blogspot.co.uk/search/label/rlisp
+You can also check rlisp-related posts on my blog at http://t-a-w.blogspot.com/search/label/rlisp
 but they might not necessarily be up to date.
 
 For interactive environment use:
