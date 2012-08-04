@@ -1,4 +1,4 @@
-#!/home/taw/everything/rlisp/trunk/rlisp -i
+#!/usr/bin/env ./rlisp -i
 
 (print ARGV)
 (+ 1 2)

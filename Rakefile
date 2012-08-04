@@ -3,7 +3,7 @@ require 'time'
 task :default => :build
 
 desc "Build everything"
-task :build => ["rlisp", "rlisp.1"]
+task :build => ["rlisp", "doc/rlisp.1"]
 
 # tavaiah-specific, fix for RubyForge release
 desc "Build RLisp package (tar.gz and zip)"
@@ -35,7 +35,7 @@ end
 #
 # TODO: We could take topdir from ~/.rpmmacros
 desc "Build RLisp package (rpm)"
-task :rpm => ["rlisp.1", :clean_all] do
+task :rpm => ["doc/rlisp.1", :clean_all] do
   File.read("rlisp.rb") =~ /^RLISP_VERSION="(.*)"$/
   version = $1
 
@@ -104,12 +104,13 @@ task :refresh do
 end
 
 desc "Compile #! support wrapper"
-file "rlisp" => "rlisp_shebang_support.c" do
-  sh "gcc", "-Wall", "-W", "-O6", "rlisp_shebang_support.c", "-o", "rlisp"
+file "rlisp" => "shebang/rlisp_shebang_support.c" do
+  rlisp_path = ENV["RLISP_PATH"] || File.dirname(__FILE__) + "/src/rlisp.rb"
+  sh "gcc", "-DRLISP_PATH=\"#{rlisp_path}\"", "-Wall", "-W", "-O6", "shebang/rlisp_shebang_support.c", "-o", "rlisp"
 end
 
-file "rlisp.1" => "rlisp.dbk" do
-  sh "xsltproc", "/usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl", "rlisp.dbk"
+file "doc/rlisp.1" => "doc/rlisp.dbk" do
+  sh "xsltproc", "/usr/share/xml/docbook/stylesheet/nwalsh/manpages/docbook.xsl", "doc/rlisp.dbk"
 end
 
 task :deb_install => :build do
