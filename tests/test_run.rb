@@ -4,8 +4,12 @@ require 'test/unit'
 require 'rlisp'
 
 class Test_RLisp_Run < Test::Unit::TestCase
+  def bin_rlisp
+    "./src/rlisp.rb"
+  end
+  
   def assert_runs(program, expected_output)
-    actual_output = `./rlisp.rb tests/#{program}.rl`
+    actual_output = `#{bin_rlisp} tests/#{program}.rl`
     expected_output = expected_output.gsub(/^ {4}/, "").sub(/^\n/,"")
     assert_equal(expected_output, actual_output)
   end
@@ -18,7 +22,7 @@ class Test_RLisp_Run < Test::Unit::TestCase
 
   # Make sure repl uses #inspect_lisp, not #to_s_lisp
   def test_repl
-    assert_runs_program("./rlisp.rb -i <tests/repl-test.rl", '
+    assert_runs_program("#{bin_rlisp} -i <tests/repl-test.rl", '
     1
     "foo"
     (() "bar")
@@ -28,18 +32,18 @@ class Test_RLisp_Run < Test::Unit::TestCase
   # Line numbers are going to be broken, but getting at least
   # filenames right is already helpful
   def test_backtrace
-    actual_output = `./rlisp.rb tests/backtrace.rl 2>&1`
+    actual_output = `#{bin_rlisp} tests/backtrace.rl 2>&1`
     
-    entries = actual_output.split(/\n/).reject{|e| e =~ /rlisp.rb|rlisp_grammar.rb|\d+ levels/}
+    entries = actual_output.split(/\n/).reject{|e| e =~ /rlisp\.rb|rlisp_grammar\.rb|\d+ levels/}
     
-    assert_equal(7, entries.size, "There should be 6 relevant entries in backtrace")
+    assert_equal(12, entries.size, "There should be 12 relevant entries in backtrace")
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[0]) # eval
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[1]) # call
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[2]) # bar
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[3]) # call
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[4]) # block within foo
-    assert_match(/\tfrom stdlib\.rl:\d+/, entries[5])  # map
-    assert_match(/\tfrom stdlib\.rl:\d+/, entries[6])  # send
+    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[5])  # map
+    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[6])  # send
 
     #assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[4]) # foo
     #assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[5]) # file toplevel
@@ -47,41 +51,41 @@ class Test_RLisp_Run < Test::Unit::TestCase
   
   def test_shebang_1_external
     # Run without options
-    assert_runs_program("./rlisp.rb tests/shebang_test_1.rl", "
+    assert_runs_program("#{bin_rlisp} tests/shebang_test_1.rl", "
     ()
     ")
 
-    assert_runs_program("./rlisp.rb tests/shebang_test_1.rl foo bar", "
+    assert_runs_program("#{bin_rlisp} tests/shebang_test_1.rl foo bar", "
     (foo bar)
     ")
 
     # -i should not be passed to the program
-    assert_runs_program("./rlisp.rb -i tests/shebang_test_1.rl foo bar", "
+    assert_runs_program("#{bin_rlisp} -i tests/shebang_test_1.rl foo bar", "
     (foo bar)
     nil
     3
     ")
 
-    assert_runs_program("./rlisp.rb tests/shebang_test_1.rl -i foo bar", "
+    assert_runs_program("#{bin_rlisp} tests/shebang_test_1.rl -i foo bar", "
     (-i foo bar)
     ")
 
     # -- support (or actually lack thereof)
-    assert_runs_program("./rlisp.rb -i tests/shebang_test_1.rl -- foo bar", "
+    assert_runs_program("#{bin_rlisp} -i tests/shebang_test_1.rl -- foo bar", "
     (-- foo bar)
     nil
     3
     ")
 
-    assert_runs_program("./rlisp.rb tests/shebang_test_1.rl -- -i foo bar", "
+    assert_runs_program("#{bin_rlisp} tests/shebang_test_1.rl -- -i foo bar", "
     (-- -i foo bar)
     ")
 
-    assert_runs_program("./rlisp.rb tests/shebang_test_1.rl -i -- foo bar", "
+    assert_runs_program("#{bin_rlisp} tests/shebang_test_1.rl -i -- foo bar", "
     (-i -- foo bar)
     ")
 
-    assert_runs_program("./rlisp.rb tests/shebang_test_1.rl -i foo -- bar", "
+    assert_runs_program("#{bin_rlisp} tests/shebang_test_1.rl -i foo -- bar", "
     (-i foo -- bar)
     ")
   end
@@ -118,11 +122,11 @@ class Test_RLisp_Run < Test::Unit::TestCase
   end
 
   # For now ignore #! options wher run externally:
-  #   assert_runs_program("./rlisp.rb ./tests/shebang_test_2.rl foo bar", "
+  #   assert_runs_program("#{bin_rlisp} ./tests/shebang_test_2.rl foo bar", "
   #   (foo bar)
   #   ")
   # but in the future maybe:
-  #   assert_runs_program("./rlisp.rb ./tests/shebang_test_2.rl foo bar", "
+  #   assert_runs_program("#{bin_rlisp} ./tests/shebang_test_2.rl foo bar", "
   #   (foo bar)
   #   nil
   #   3
@@ -173,7 +177,7 @@ class Test_RLisp_Run < Test::Unit::TestCase
   end
   
   def test_one_liners
-    assert_runs_program(%q[./rlisp.rb -e '(print "Hello, world!")'], "
+    assert_runs_program(%Q[#{bin_rlisp} -e '(print "Hello, world!")'], "
     Hello, world!
     ")
   end
@@ -229,7 +233,7 @@ class Test_RLisp_Run < Test::Unit::TestCase
 
   def test_hash
     # Can be either {:a=>6, :b=>4} or {:b=>4, :a=>6}
-    actual_output = `./rlisp.rb tests/hash.rl`.sub("{:b=>4, :a=>6}", "{:a=>6, :b=>4}")
+    actual_output = `#{bin_rlisp} tests/hash.rl`.sub("{:b=>4, :a=>6}", "{:a=>6, :b=>4}")
     expected_output = "10\n{:a=>6, :b=>4}\n"
     assert_equal(expected_output, actual_output)
   end

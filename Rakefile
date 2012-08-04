@@ -11,7 +11,7 @@ task :package => :build do
   date_string = Time.new.gmtime.strftime("%Y-%m-%d-%H-%M")
   # Packing "rlisp" will be confusing
   files = FileList[*%w[
-             COPYING Rakefile README
+             doc/COPYING Rakefile README
              rlisp_shebang_support.c
              *.rb
              *.rl
