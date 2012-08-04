@@ -462,15 +462,16 @@ class Test_Backtraces < Test::Unit::TestCase
     @rlisp.run_file("stdlib.rl")
   end
 
-  def assert_backtrace(code, expected, skip_frames=0)
+  def assert_backtrace(code, expected)
     begin
       @rlisp.run(RLispGrammar.new(code).expr, "example.rl")
     rescue Exception => e
       bt = e.backtrace
-      #unless expected == bt[skip_frames]
-      #  STDERR.puts bt
-      #end
-      assert_equal(expected, bt[skip_frames], <<EOF)
+      # A lot of these are due to 1.8 vs 1.9 differences
+      bt = bt.select{|line|
+        line !~ %r[test/unit|src/rlisp\.rb|test_rlisp\.rb|`\[\]'|`call'|`default'|`yield']
+      }.map{|line| line.sub("block in ", "")}
+      assert_equal(expected, bt, <<EOF)
 Full backtrace:
 #{e}
 #{bt.join "\n"}
@@ -487,7 +488,7 @@ EOF
         (bar)
        ))
        (foo)
-    )", "example.rl:2:in `foo'", 4)
+    )", ["example.rl:2:in `foo'", "example.rl:5:in `run'"])
   end
 
   def test_local_fn_bt
@@ -497,7 +498,7 @@ EOF
         (bar)
        ))
        (foo)
-    )", "example.rl:2:in `foo'", 4)
+    )", ["example.rl:2:in `foo'", "example.rl:5:in `anon_fn'", "example.rl:5:in `run'"])
   end
 
   def test_defun_bt
@@ -507,7 +508,7 @@ EOF
         (bar)
        )
        (foo)
-    )", "example.rl:2:in `foo'", 4)
+    )", ["example.rl:2:in `foo'", "example.rl:5:in `run'"])
   end
 
   def test_local_defun_bt
@@ -517,34 +518,36 @@ EOF
         (bar)
        )
        (foo)
-    )", "example.rl:2:in `foo'", 4)
+    )", ["example.rl:2:in `foo'", "example.rl:5:in `anon_fn'", "example.rl:5:in `run'"])
   end
 
   def test_nested_bt
-    assert_backtrace("(print (foo))", "example.rl:1:in `run'", 4)
+    assert_backtrace("(print (foo))", ["example.rl:1:in `run'"])
     assert_backtrace("(print
       (foo)
-    )", "example.rl:2:in `run'", 4)
+    )", ["example.rl:2:in `run'"])
   end
   
   def test_simple_bt
-    assert_backtrace("NoSuchGlobal", "example.rl:1:in `run'")
-    assert_backtrace("(foo)", "example.rl:1:in `run'", 4)
+    assert_backtrace("NoSuchGlobal", ["example.rl:1:in `run'"])
+    assert_backtrace("(foo)", ["example.rl:1:in `run'"])
     assert_backtrace("(
     foo
-    )", "example.rl:1:in `run'", 4)
+    )", ["example.rl:1:in `run'"])
     assert_backtrace("
     (foo)
-    ", "example.rl:2:in `run'", 4)
+    ", ["example.rl:2:in `run'"])
   end
   def test_method_bt
     # Why not example.rl:3 ?
+    # In 1.9 backtrace is ["example.rl:2:in `anon_fn_1'", "example.rl:6:in `run'"]
+    # It needs investigation why, but it probably doesn't matter much
     assert_backtrace("(do (class Object
       (method a_test_method ()
         (raise \"NoHope\")
       )
     )
     [self a_test_method]
-    )", "example.rl:2:in `a_test_method'", 2)
+    )", ["example.rl:2:in `a_test_method'", "example.rl:6:in `run'"])
   end
 end
