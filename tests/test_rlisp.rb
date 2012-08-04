@@ -204,9 +204,16 @@ class Test_RLisp_stdlib < Test::Unit::TestCase
 
   def test_complex
     run_rlisp('(ruby-require "complex")')
-    assert_runs("(let a [Complex new 1.0 2.0])", Complex.new(1.0, 2.0))
-    assert_runs("(let b [Complex new 5.0 -1.0])", Complex.new(5.0, -1.0))
-    assert_runs("(+ a b)", Complex.new(6.0, 1.0))
+    # The interface changed, and there's no way to be compatible with both 1.8's #new == 1.9's #rect
+    if RUBY_VERSION < '1.9'
+      assert_runs("(let a [Complex new 1.0 2.0])", Complex.new(1.0, 2.0))
+      assert_runs("(let b [Complex new 5.0 -1.0])", Complex.new(5.0, -1.0))
+      assert_runs("(+ a b)", Complex.new(6.0, 1.0))
+    else
+      assert_runs("(let a [Complex rect 1.0 2.0])", Complex.rect(1.0, 2.0))
+      assert_runs("(let b [Complex rect 5.0 -1.0])", Complex.rect(5.0, -1.0))
+      assert_runs("(+ a b)", Complex.rect(6.0, 1.0))
+    end
   end
 
   # Proc.new{|a,*b| a}.call([1, 2, 3]) => 1, not [1, 2, 3]

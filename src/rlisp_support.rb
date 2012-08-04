@@ -47,16 +47,24 @@ end
 
 # Make .. and ... methods
 class Object
-  define_method(:dotdot) {|other| self..other }
-  define_method(:dotdotdot) {|other| self...other }
+  define_method(:dotdot){|other| self..other }
+  define_method(:dotdotdot){|other| self...other }
 end
 
-class Symbol
-  include Comparable
-  def <=>(other)
-    to_s <=> other.to_s
+if RUBY_VERSION < '1.9'
+  class Symbol
+    include Comparable
+    def <=>(other)
+      to_s <=> other.to_s
+    end
+    protected :<=>
   end
-  protected :<=>
+
+  class String
+    def ord
+      self[0]
+    end
+  end
 end
 
 class Hash
@@ -105,9 +113,8 @@ class MatchData
 end
 
 class Symbol
-  # FIXME: 1.8-specific, use $1.ord in 1.9
   def mangle_c
-    to_s.gsub(/([^a-zA-Z0-9])/) { sprintf "_%02x", $1[0] }
+    to_s.gsub(/([^a-zA-Z0-9])/) { sprintf "_%02x", $1.ord }
   end
   def stringify_c
     '"' + to_s.gsub(/([\\"])/) { "\\#{$1}" } + '"'

@@ -16,7 +16,7 @@
 ; Logic special forms
 (defmacro and args
   (if (empty? args)
-    true
+    `true
     (do
       (let tmp (gensym))
       `(do
@@ -26,7 +26,7 @@
           ,tmp)))))
 (defmacro or args
   (if (empty? args)
-    false
+    `false
     (do
       (let tmp (gensym))
       `(do
@@ -39,7 +39,7 @@
 
 (defmacro bool-and args
   (if (empty? args)
-    true
+    `true
     (if [[args size] == 1]
       (hd args)
       `(if ,(hd args)

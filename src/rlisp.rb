@@ -62,7 +62,7 @@ class Symbol
     raise "#{self} is not an RLisp variable" unless rlisp_variable?
     var = to_s
     return :"_#{var}" if var =~ /\At\d+\Z/ or var =~ /\Aa_/
-    return var.gsub(/[^A-Za-z0-9]/){|c| sprintf "_%02x_", c[0]}.to_sym
+    return var.gsub(/[^A-Za-z0-9]/){|c| sprintf "_%02x_", c.ord}.to_sym
   end
 end
 
