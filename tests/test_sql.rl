@@ -1,5 +1,3 @@
-#!/home/taw/everything/rlisp/trunk/rlisp
-
 ; This test file shows some planned features of an SQL library
 
 (require "rlunit.rl")

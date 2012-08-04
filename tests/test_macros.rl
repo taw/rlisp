@@ -1,5 +1,3 @@
-#!/home/taw/everything/rlisp/trunk/rlisp
-
 (require "rlunit.rl")
 
 ; It's much easier to temporarily replace (gensym)

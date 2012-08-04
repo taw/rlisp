@@ -469,7 +469,7 @@ class Test_Backtraces < Test::Unit::TestCase
       bt = e.backtrace
       # A lot of these are due to 1.8 vs 1.9 differences
       bt = bt.select{|line|
-        line !~ %r[test/unit|src/rlisp\.rb|test_rlisp\.rb|`\[\]'|`call'|`default'|`yield']
+        line !~ %r[test/unit|src/rlisp\.rb|test_all\.rb|test_rlisp\.rb|`\[\]'|`call'|`default'|`yield']
       }.map{|line| line.sub("block in ", "")}
       assert_equal(expected, bt, <<EOF)
 Full backtrace:
