@@ -91,17 +91,17 @@ class RLispGrammar
   end
 
   def eat(sz)
-     eaten = @buf[0...sz]
-     @buf = @buf[sz..-1]
-     # eaten.each_char if we had it ...
-     eaten.each_byte{|c|
-     if c == ?\n
-       @column = 0
-       @line += 1
-     else
-       @column += 1
-     end
-     }
+    eaten = @buf[0...sz]
+    @buf = @buf[sz..-1]
+    # eaten.each_char if we had it ...
+    eaten.each_byte{|c|
+      if c == 10 # ?\n
+        @column = 0
+        @line += 1
+      else
+        @column += 1
+      end
+    }
   end
   
   # Possible tokens:
