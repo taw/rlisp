@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp'
 
-class Test_Tokenizer < Test::Unit::TestCase
+class Test_Tokenizer < Minitest::Test
   def test_tokenizer
     code = '2.3 4 , ,@ ` ( ) [ ] foo bar x-y u19 #t #f bah "foo" "bar #{ 3 }" "#{1}" [] []= "#{a} #{b} #{c}"'
     rg = RLispGrammar.new(code)

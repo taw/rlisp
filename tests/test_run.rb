@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp'
 
-class Test_RLisp_Run < Test::Unit::TestCase
+class Test_RLisp_Run < Minitest::Test
   def bin_rlisp
     "./src/rlisp.rb"
   end

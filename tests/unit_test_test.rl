@@ -1,6 +1,6 @@
-(ruby-require "test/unit")
+(ruby-require "minitest/autorun")
 
-(let Test_testing_framework [Class new Test::Unit::TestCase])
+(let Test_testing_framework [Class new Minitest::Test])
 (class Test_testing_framework
   (method test_assertions ()
     [self assert_equal 9 (+ 2 7)]
@@ -21,7 +21,7 @@
     [self assert_no_match (rx "\\A\\d+\\.\\d+\\Z") "Ruby 2.0"]
     [self assert_match (rx "\\d+\\.\\d+") "3.14159"]
     [self assert_match (rx "\\A\\d+\\.\\d+\\Z") "3.14159"]
-    [self assert_not_equal () nil]
+    [self refute_equal () nil]
     [self assert_same #f false]
     [self assert_same #t true]
   )

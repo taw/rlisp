@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp'
 
-class Test_RLisp_support < Test::Unit::TestCase
+class Test_RLisp_support < Minitest::Test
   def test_variable
     a = Variable.new
     assert_equal(nil, a.get)

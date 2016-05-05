@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp_highlighter'
 
-class Test_Indent < Test::Unit::TestCase
+class Test_Indent < Minitest::Test
   def assert_highlights(code_out,code_in)
     highlighted = RLispHighlighter.highlight_html(code_in)
     header = "<html><head><title>Highlighted RLisp example</title></head><body><pre>"

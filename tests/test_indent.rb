@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp_indent'
 
-class Test_Indent < Test::Unit::TestCase
+class Test_Indent < Minitest::Test
   def assert_indent(code_out,code_in)
     assert_equal(code_out,RLispIndent.indent(code_in))
   end

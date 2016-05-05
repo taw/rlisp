@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp'
 
 ##
@@ -13,7 +13,7 @@ require 'rlisp'
 # Example:
 #   assert_eql 'MY STRING', 'my string'.upcase
 #   assert_eql 1.0, 1 # fails
-module Test::Unit::Assertions
+module Minitest::Assertions
   public
   def assert_eql(expected, actual, message=nil)
     full_message = build_message(message, <<EOT, expected, actual)
@@ -24,7 +24,7 @@ EOT
   end
 end
 
-class Test_Parser < Test::Unit::TestCase
+class Test_Parser < Minitest::Test
   def assert_parses(rlisp, ast)
     assert_eql(ast, RLispGrammar.new(rlisp).expr)
   end
@@ -66,7 +66,7 @@ class Test_Parser < Test::Unit::TestCase
   end
 end
 
-class Test_Debug_Info < Test::Unit::TestCase
+class Test_Debug_Info < Minitest::Test
   def test_debug_info
     fh = File.open("tests/adder.rl")
     parser = RLispGrammar.new(fh, "tests/adder.rl")
@@ -83,7 +83,7 @@ class Test_Debug_Info < Test::Unit::TestCase
     assert_eql(["example.rl", 1, 0], expr.debug_info)
     assert_eql(["example.rl", 1, 9], expr[2].debug_info)
     assert_eql(["example.rl", 1, 16], expr[2][2].debug_info)
-    
+
     rlisp = RLispCompiler.new
     pexpr = rlisp.precompile(expr)
     assert_eql(["example.rl", 1, 0], pexpr.debug_info)
@@ -96,7 +96,7 @@ class Test_Debug_Info < Test::Unit::TestCase
     expr = parser.expr
     assert_eql(["example.rl", 1, 0], expr.debug_info)
     assert_eql(["example.rl", 1, 14], expr[3].debug_info)
-    
+
     rlisp = RLispCompiler.new
     rlisp.run_file('stdlib.rl')
     pexpr = rlisp.precompile(expr)

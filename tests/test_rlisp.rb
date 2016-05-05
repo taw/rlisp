@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp'
 
 ##
@@ -13,7 +13,7 @@ require 'rlisp'
 # Example:
 #   assert_eql 'MY STRING', 'my string'.upcase
 #   assert_eql 1.0, 1 # fails
-module Test::Unit::Assertions
+module Minitest::Assertions
   public
   def assert_eql(expected, actual, message=nil)
     full_message = build_message(message, <<EOT, expected, actual)
@@ -24,7 +24,7 @@ EOT
   end
 end
 
-class Test_RLisp < Test::Unit::TestCase
+class Test_RLisp < Minitest::Test
   def setup
     @rlisp = RLispCompiler.new
   end
@@ -46,7 +46,7 @@ class Test_RLisp < Test::Unit::TestCase
   end
 end
 
-class Test_RLisp_stdlib < Test::Unit::TestCase
+class Test_RLisp_stdlib < Minitest::Test
   def setup
     @rlisp = RLispCompiler.new
     @rlisp.run_file("stdlib.rl")
@@ -301,7 +301,7 @@ class Test_RLisp_stdlib < Test::Unit::TestCase
   end
 end
 
-class Test_RLisp_macros < Test::Unit::TestCase
+class Test_RLisp_macros < Minitest::Test
   def setup
     @rlisp = RLispCompiler.new
   end
@@ -456,7 +456,7 @@ class Test_RLisp_macros < Test::Unit::TestCase
   end
 end
 
-class Test_Backtraces < Test::Unit::TestCase
+class Test_Backtraces < Minitest::Test
   def setup
     @rlisp = RLispCompiler.new
     @rlisp.run_file("stdlib.rl")

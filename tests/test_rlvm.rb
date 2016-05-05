@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
-require 'test/unit'
+require "minitest/autorun"
 require 'rlisp'
 
-class Test_RLVM_Ruby < Test::Unit::TestCase
+class Test_RLVM_Ruby < Minitest::Test
   def assert_compiles(code, expected, test_id)
     expr = RLispGrammar.new(code).expr
 
@@ -336,9 +336,9 @@ EOT
     "
     ::Object
     ", 28)
-    assert_compiles("Test::Unit::TestCase",
+    assert_compiles("Minitest::Test",
     "
-    ::Test::Unit::TestCase
+    ::Minitest::Test
     ", 29)
   end
 
