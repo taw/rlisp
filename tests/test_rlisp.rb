@@ -16,11 +16,8 @@ require 'rlisp'
 module Minitest::Assertions
   public
   def assert_eql(expected, actual, message=nil)
-    full_message = build_message(message, <<EOT, expected, actual)
-<?> expected but was
-<?>.
-EOT
-    assert_block(full_message) { expected.eql?(actual) }
+    full_message = message || "#{expected} expected but was\n#{actual}."
+    assert proc{expected.eql?(actual)}, full_message
   end
 end
 
@@ -28,15 +25,15 @@ class Test_RLisp < Minitest::Test
   def setup
     @rlisp = RLispCompiler.new
   end
-  
+
   def assert_runs(code, expected)
     assert_eql(expected, @rlisp.run(RLispGrammar.new(code).expr))
   end
-  
+
   def run_rlisp(code)
     @rlisp.run(RLispGrammar.new(code).expr)
   end
-  
+
   def test_constant
     assert_runs("2", 2)
     assert_runs("2.0", 2.0)
@@ -51,7 +48,7 @@ class Test_RLisp_stdlib < Minitest::Test
     @rlisp = RLispCompiler.new
     @rlisp.run_file("stdlib.rl")
   end
-  
+
   def assert_runs(code, expected)
     assert_eql(expected, @rlisp.run(RLispGrammar.new(code).expr))
   end
@@ -59,7 +56,7 @@ class Test_RLisp_stdlib < Minitest::Test
   def assert_runs_and_equals(code, expected)
     assert_equal(expected, @rlisp.run(RLispGrammar.new(code).expr))
   end
-  
+
   def run_rlisp(code)
     @rlisp.run(RLispGrammar.new(code).expr)
   end
@@ -106,7 +103,7 @@ class Test_RLisp_stdlib < Minitest::Test
     assert_runs("(* 2 5)", 2*5)
     assert_runs("(* 2 5 13)", 2*5*13)
   end
-  
+
   def test_let
     assert_runs("(let x 2)", 2)
     assert_runs("(let y 5)", 5)
@@ -129,7 +126,7 @@ class Test_RLisp_stdlib < Minitest::Test
     assert_runs("(< 1 2)", 1 < 2)
     assert_runs("(< 1 1)", 1 < 1)
     assert_runs("(< 2 1)", 2 < 1)
-    
+
     assert_runs("(<= 1 2)", 1 <= 2)
     assert_runs("(<= 1 1)", 1 <= 1)
     assert_runs("(<= 2 1)", 2 <= 1)
@@ -142,21 +139,21 @@ class Test_RLisp_stdlib < Minitest::Test
     assert_runs("(>= 1 1)", 1 >= 1)
     assert_runs("(>= 2 1)", 2 >= 1)
   end
-  
+
   def test_eql
     assert_runs("(== 1 2)", 1 == 2)
     assert_runs("(== 1 1)", 1 == 1)
     assert_runs("(== 1 1.0)", 1 == 1.0)
-    
+
     assert_runs("(eql? 1 2)", 1.eql?(2))
     assert_runs("(eql? 1 1)", 1.eql?(1))
     assert_runs("(eql? 1 1.0)", 1.equal?(1.0))
   end
-  
+
   def test_map
     assert_runs("(map (fn (x) (* x 2)) '(1 2 5))", [2, 4, 10])
   end
-  
+
   def test_fib
     run_rlisp("(let fib (fn (x)
       (if (< x 2)
@@ -248,7 +245,7 @@ class Test_RLisp_stdlib < Minitest::Test
     assert_runs('(rx "\\\\d*")', /\d*/)
     assert_runs('(rx "(?i:abc)")', /(?i:abc)/)
   end
-  
+
   def test_class_foo
     run_rlisp("(let Foo [Class new])")
     run_rlisp(%q<(class Foo
@@ -315,11 +312,11 @@ class Test_RLisp_macros < Minitest::Test
     expected = RLispGrammar.new(expected).expr
     assert_eql(expected, res)
   end
-  
+
   def run_rlisp(code)
     @rlisp.run(RLispGrammar.new(code).expr)
   end
-  
+
   def test_defun
     run_rlisp("(letmacro defmacro (fn (name args . body) `(letmacro ,name (fn ,args ,@body))))")
     run_rlisp("(defmacro my-defun (name args . code)
@@ -345,7 +342,7 @@ class Test_RLisp_macros < Minitest::Test
       tmp-1
     )")
   end
-  
+
   def test_match
     @rlisp.run_file("stdlib.rl")
     # Make gensym symbols printable
@@ -527,7 +524,7 @@ EOF
       (foo)
     )", ["example.rl:2:in `run'"])
   end
-  
+
   def test_simple_bt
     assert_backtrace("NoSuchGlobal", ["example.rl:1:in `run'"])
     assert_backtrace("(foo)", ["example.rl:1:in `run'"])

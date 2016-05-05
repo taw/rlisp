@@ -9,17 +9,17 @@ class Test_RLVM_Ruby < Minitest::Test
 
     expected = expected.gsub(/^ {4}/, "").sub(/^\n/,"")
     expected = expected.gsub(/^ */, "").gsub(/;/,"\n").chomp
-    
+
     actual = RLispCompiler.new.rlvm_compile(expr, "RLispTestC#{test_id}")
     actual = actual.gsub(/^\n/,"").gsub(/;/,"\n").chomp
-    
+
     full_message = <<EOT
 #{expected}
 
 expected but was:
 #{actual}
 EOT
-    assert_block(full_message) { expected == actual }
+    assert proc{ expected == actual }, full_message
   end
 
   def test_constant
@@ -39,7 +39,7 @@ EOT
     \"foo\"
     ", 4)
   end
-  
+
   def test_constant_list
     assert_compiles("'(foo bar 5)", "
     t0 = [:foo, :bar, 5]
@@ -302,7 +302,7 @@ EOT
     t2
     ", 25)
   end
-  
+
   def test_nested_scoping
     assert_compiles("(fn (tmp) (fn () `(do ,tmp)))",
     "
@@ -330,7 +330,7 @@ EOT
     self
     ", 27)
   end
-  
+
   def test_constants
     assert_compiles("Object",
     "

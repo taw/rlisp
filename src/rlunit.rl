@@ -14,8 +14,8 @@
   (a '=~ b)           `[self assert_match ,b ,a]
   (a '=~ b 'msg: msg) `[self assert_match ,b ,a ,msg]
 
-  (a '!~ b)           `[self assert_no_match ,b ,a]
-  (a '!~ b 'msg: msg) `[self assert_no_match ,b ,a ,msg]
+  (a '!~ b)           `[self refute_match ,b ,a]
+  (a '!~ b 'msg: msg) `[self refute_match ,b ,a ,msg]
 
   (a '!= b)           `[self refute_equal ,b ,a]
   (a '!= b 'msg: msg) `[self refute_equal ,b ,a ,msg]
@@ -23,8 +23,8 @@
   (a 'same: b)           `[self assert_same ,b ,a]
   (a 'same: b 'msg: msg) `[self assert_same ,b ,a ,msg]
 
-  (a 'not-same: b)           `[self assert_not_same ,b ,a]
-  (a 'not-same: b 'msg: msg) `[self assert_not_same ,b ,a ,msg]
+  (a 'not-same: b)           `[self refute_same ,b ,a]
+  (a 'not-same: b 'msg: msg) `[self refute_same ,b ,a ,msg]
 
   (a 'kind-of? b)           `[self assert_kind_of  ,b ,a]
   (a 'kind-of? b 'msg: msg) `[self assert_kind_of  ,b ,a ,msg]
@@ -32,9 +32,9 @@
   (a 'instance-of? b)          `[self assert_instance_of  ,b ,a]
   (a 'instance-of? b msg: msg) `[self assert_instance_of  ,b ,a ,msg]
 
-  ('block: blk)                `[self assert_block & (fn () ,@blk)]
-  ('block: blk 'msg: msg)      `[self assert_block ,msg & (fn () ,@blk)]
-  ('msg: msg 'block: blk)      `[self assert_block ,msg & (fn () ,@blk)]
+  ('block: blk)                `[self assert_block (fn () ,@blk)]
+  ('block: blk 'msg: msg)      `[self assert_block (fn () ,@blk) ,msg]
+  ('msg: msg 'block: blk)      `[self assert_block (fn () ,@blk) ,msg]
 
   (a '== b 'delta: c) `[self assert_in_delta  ,b ,a ,c]
   (a '== b 'delta: c
