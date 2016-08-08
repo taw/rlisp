@@ -5,27 +5,6 @@ task :default => :build
 desc "Build everything"
 task :build => ["rlisp", "doc/rlisp.1"]
 
-# tavaiah-specific, fix for RubyForge release
-desc "Build RLisp package (tar.gz and zip)"
-task :package => :build do
-  date_string = Time.new.gmtime.strftime("%Y-%m-%d-%H-%M")
-  # Packing "rlisp" will be confusing
-  files = FileList[*%w[
-             doc/COPYING Rakefile README
-             rlisp_shebang_support.c
-             *.rb
-             *.rl
-             examples/*.rl
-             tests/*.rl
-            ]]
-
-    files = files.map{|f| "rlisp/#{f}"}
-    Dir.chdir("..") {
-        sh "tar", "-z", "-c", "-f", "../website/packages/rlisp-#{date_string}.tar.gz", *files
-        sh "zip", "-q", "../website/packages/rlisp-#{date_string}.zip", *files
-    }
-end
-
 desc "Build RLisp package (deb)"
 task :deb => :build do
   sh "dpkg-buildpackage -rfakeroot -us -uc"
@@ -78,15 +57,15 @@ task :benchmark => :build do
         rlisp_impl =~ /\/(.*)\./ or raise "Benchmark file name `#{rlisp_impl}' not understood"
         name = $1
         ruby_impl = "benchmarks-ruby/#{name}.ruby"
-        
+
         params = default_params[name]
         cnt    = default_cnt[name]
-        
+
         next if cnt == 0
 
         ruby_time = time_cmd("ruby #{ruby_impl} #{params.join ' '}", cnt)
         rlisp_time = time_cmd("./rlisp.rb #{rlisp_impl} #{params.join ' '}", cnt)
-       
+
         print "Benchmark #{name}:\n"
         print "Ruby: #{ruby_time}s\n"
         print "RLisp: #{rlisp_time}s (x#{sprintf "%0.1f", (rlisp_time.to_f/ruby_time)})\n\n"
@@ -95,7 +74,7 @@ end
 
 desc "Run all tests"
 task :test => [:refresh, :build] do
-  sh "./test_all.rb"
+  sh "./tests/test_all.rb"
 end
 
 desc "Remove .rlc files"
@@ -106,7 +85,7 @@ end
 desc "Compile #! support wrapper"
 file "rlisp" => "shebang/rlisp_shebang_support.c" do
   rlisp_path = ENV["RLISP_PATH"] || File.dirname(__FILE__) + "/src/rlisp.rb"
-  sh "gcc", "-DRLISP_PATH=\"#{rlisp_path}\"", "-Wall", "-W", "-O6", "shebang/rlisp_shebang_support.c", "-o", "rlisp"
+  sh "gcc", "-DRLISP_PATH=\"#{rlisp_path}\"", "-Wall", "-W", "-O3", "shebang/rlisp_shebang_support.c", "-o", "rlisp"
 end
 
 file "doc/rlisp.1" => "doc/rlisp.dbk" do
@@ -130,7 +109,7 @@ task :rpm_install => :build do
   destdir = ENV["DESTDIR"] or raise "DESTDIR needed"
   mkdir_p "#{destdir}/usr/share/doc/RLisp"
   cp ["README", "debian/copyright"], "#{destdir}/usr/share/doc/RLisp"
-  
+
   mkdir_p "#{destdir}/usr/share/man/man1"
   sh "gzip <rlisp.1 >#{destdir}/usr/share/man/man1/rlisp.1.gz"
 
@@ -187,20 +166,20 @@ task :version_update do
     raise "Updating from version `#{old_version}' to version `#{new_version}' would break timespace continuum"
   else
     File.update_contents("rlisp.rb") do |cnt|
-      cnt.gsub(/^RLISP_VERSION=".*"$/, %Q[RLISP_VERSION="#{new_version}"]) 
+      cnt.gsub(/^RLISP_VERSION=".*"$/, %Q[RLISP_VERSION="#{new_version}"])
     end
-  
+
     File.update_contents("RLisp.spec") do |cnt|
-      cnt.gsub(/^Version: .*$/, "Version: #{new_version}") 
+      cnt.gsub(/^Version: .*$/, "Version: #{new_version}")
     end
     File.update_contents("debian/changelog") do |cnt|
       entry = <<EOF
 rlisp (#{new_version}) unstable; urgency=low
 
   * Upstream update
-  
+
  -- Tomasz Wegrzanowski <Tomasz.Wegrzanowski@gmail.com>  #{Time.now.rfc822}
-   
+
 EOF
       entry + cnt
     end
