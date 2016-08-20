@@ -31,23 +31,21 @@ class Test_RLisp_Run < Minitest::Test
 
   # Line numbers are going to be broken, but getting at least
   # filenames right is already helpful
+  #
+  # This varies wildly with ruby version. 2.3.0 test is here:
   def test_backtrace
     actual_output = `#{bin_rlisp} tests/backtrace.rl 2>&1`
 
     entries = actual_output.split(/\n/).reject{|e| e =~ /rlisp\.rb|rlisp_grammar\.rb|\d+ levels/}
 
-    assert_equal(10, entries.size, "There should be 10 relevant entries in backtrace")
+    assert_equal(6, entries.size, "There should be 6 relevant entries in backtrace")
 
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[0])
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[1])
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[2])
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[3])
-    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[4])
-    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[5])
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[6])
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[7])
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[8])
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[9])
+    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[2])
+    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[3])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[4])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[5])
   end
 
   def test_shebang_1_external
