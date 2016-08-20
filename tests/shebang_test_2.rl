@@ -1,4 +1,4 @@
-#!/usr/bin/env ./rlisp -i
+#!./rlisp -i
 
 (print ARGV)
 (+ 1 2)
