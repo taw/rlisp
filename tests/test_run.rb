@@ -7,7 +7,7 @@ class Test_RLisp_Run < Minitest::Test
   def bin_rlisp
     "./src/rlisp.rb"
   end
-  
+
   def assert_runs(program, expected_output)
     actual_output = `#{bin_rlisp} tests/#{program}.rl`
     expected_output = expected_output.gsub(/^ {4}/, "").sub(/^\n/,"")
@@ -33,22 +33,23 @@ class Test_RLisp_Run < Minitest::Test
   # filenames right is already helpful
   def test_backtrace
     actual_output = `#{bin_rlisp} tests/backtrace.rl 2>&1`
-    
-    entries = actual_output.split(/\n/).reject{|e| e =~ /rlisp\.rb|rlisp_grammar\.rb|\d+ levels/}
-    
-    assert_equal(12, entries.size, "There should be 12 relevant entries in backtrace")
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[0]) # eval
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[1]) # call
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[2]) # bar
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[3]) # call
-    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[4]) # block within foo
-    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[5])  # map
-    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[6])  # send
 
-    #assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[4]) # foo
-    #assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[5]) # file toplevel
+    entries = actual_output.split(/\n/).reject{|e| e =~ /rlisp\.rb|rlisp_grammar\.rb|\d+ levels/}
+
+    assert_equal(10, entries.size, "There should be 10 relevant entries in backtrace")
+
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[0])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[1])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[2])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[3])
+    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[4])
+    assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[5])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[6])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[7])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[8])
+    assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[9])
   end
-  
+
   def test_shebang_1_external
     # Run without options
     assert_runs_program("#{bin_rlisp} tests/shebang_test_1.rl", "
@@ -175,7 +176,7 @@ class Test_RLisp_Run < Minitest::Test
     3
     ")
   end
-  
+
   def test_one_liners
     assert_runs_program(%Q[#{bin_rlisp} -e '(print "Hello, world!")'], "
     Hello, world!
@@ -218,7 +219,7 @@ class Test_RLisp_Run < Minitest::Test
     110
     ")
   end
-  
+
   def test_fib
     assert_runs("fib", "
     (1 2 3 5 8)

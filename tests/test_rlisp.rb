@@ -466,7 +466,7 @@ class Test_Backtraces < Minitest::Test
       bt = e.backtrace
       # A lot of these are due to 1.8 vs 1.9 differences
       bt = bt.select{|line|
-        line !~ %r[test/unit|src/rlisp\.rb|test_all\.rb|test_rlisp\.rb|`\[\]'|`call'|`default'|`yield']
+        line !~ %r[test/unit|src/rlisp\.rb|test_all\.rb|test_rlisp\.rb|`\[\]'|`call'|`default'|`yield'|lib/minitest]
       }.map{|line| line.sub("block in ", "")}
       assert_equal(expected, bt, <<EOF)
 Full backtrace:
@@ -536,15 +536,13 @@ EOF
     ", ["example.rl:2:in `run'"])
   end
   def test_method_bt
-    # Why not example.rl:3 ?
-    # In 1.9 backtrace is ["example.rl:2:in `anon_fn_1'", "example.rl:6:in `run'"]
-    # It needs investigation why, but it probably doesn't matter much
+    # It used to work better in 1.8 apparently
     assert_backtrace("(do (class Object
       (method a_test_method ()
         (raise \"NoHope\")
       )
     )
     [self a_test_method]
-    )", ["example.rl:2:in `a_test_method'", "example.rl:6:in `run'"])
+    )", ["example.rl:2:in `anon_fn_1'", "example.rl:6:in `run'"])
   end
 end

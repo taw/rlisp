@@ -32,9 +32,9 @@
   (a 'instance-of? b)          `[self assert_instance_of  ,b ,a]
   (a 'instance-of? b msg: msg) `[self assert_instance_of  ,b ,a ,msg]
 
-  ('block: blk)                `[self assert_block (fn () ,@blk)]
-  ('block: blk 'msg: msg)      `[self assert_block (fn () ,@blk) ,msg]
-  ('msg: msg 'block: blk)      `[self assert_block (fn () ,@blk) ,msg]
+  ('block: blk)                `[self assert ((fn () ,@blk))]
+  ('block: blk 'msg: msg)      `[self assert ((fn () ,@blk)) ,msg]
+  ('msg: msg 'block: blk)      `[self assert ((fn () ,@blk)) ,msg]
 
   (a '== b 'delta: c) `[self assert_in_delta  ,b ,a ,c]
   (a '== b 'delta: c
