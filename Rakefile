@@ -20,7 +20,7 @@ task :rpm => ["doc/rlisp.1", :clean_all] do
 
   Dir.chdir("..") {
     n = "RLisp-#{version}"
-    if File.exists?(n) and File.symlink?(n)
+    if File.exist?(n) and File.symlink?(n)
       puts "#{n} already exists, deleting"
       rm n
     end
@@ -73,7 +73,7 @@ task :benchmark => :build do
 end
 
 desc "Run all tests"
-task :test => [:refresh, :build] do
+task :test => [:refresh, "rlisp"] do
   sh "./tests/test_all.rb"
 end
 
