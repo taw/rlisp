@@ -6,13 +6,13 @@ require 'rlisp'
 class Test_RLisp_support < Minitest::Test
   def test_variable
     a = Variable.new
-    assert_equal(nil, a.get)
+    assert_nil(a.get)
     a.set "foo"
     assert_equal("foo", a.get)
     a.set "bar"
     assert_equal("bar", a.get)
   end
-  
+
   def test_to_s_lisp
     cases = [
       [0, "0"],
