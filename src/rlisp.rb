@@ -42,7 +42,7 @@ class Symbol
   end
 
   RLisp_Special_Forms = [
-    :quote, :fn, :if, 
+    :quote, :fn, :if,
     :quasiquote, :unquote, :"unquote-splicing",
     :let, :set!,
     :letmacro # TODO: replace defmacro with (letmacro name (fn args . body))
@@ -192,15 +192,15 @@ class CodeGenerator
 
     args_str = args.map{|a,tp,cls| "#{tp}#{if cls == :local_arg then 'a_' else '' end}#{a.mangle}"}.join(', ')
     if has_rest_arg
-      self << "#{args_str} = *args" 
+      self << "#{args_str} = *args"
     elsif !args.empty?
-      self << "#{args_str}, = *args" 
+      self << "#{args_str}, = *args"
     end
     yield
     @indent -= 1
     self << "end"
   end
-  
+
   # Use only with code_else
   def code_if(cond)
     self << "if #{cond}"
@@ -242,7 +242,7 @@ class RLispCompiler
     return @macros[expr[0]].call(*expr[1..-1]) if @macros[expr[0]]
     return expr
   end
-  
+
   # Expand macros
   def precompile(expr, suggested_name=nil, self_debug_info=nil)
     return expr unless expr.is_a?(Array) and expr != []
@@ -283,7 +283,7 @@ class RLispCompiler
 
   def precompile_quasiquote(expr, suggested_name, self_debug_info)
     return expr unless expr.is_a?(Array) and expr != []
-    
+
     case expr[0]
     when :unquote, :"unquote-splicing"
       raise "#{expr[0]} expects 1 argument" unless expr.size == 2
@@ -304,13 +304,13 @@ class RLispCompiler
   def extract_variables_used_fn(expr)
     defs, uses, nest, mods = {}, {}, {}, {}
     n_args, rest_arg, proc_arg = parse_args(expr[1])
-    
+
     n_args.each{|a| defs[a] = true}
     defs[rest_arg] = true if rest_arg
     defs[proc_arg] = true if proc_arg
 
     expr[2..-1].each{|e| extract_variables_used_expr(e, defs, uses, nest, mods)}
-    
+
     return [defs.keys, uses.keys, nest.keys, mods.keys]
   end
 
@@ -321,14 +321,14 @@ class RLispCompiler
       case expr[0]
       when :fn
         xdefs, xuses, xnest, xmods = *extract_variables_used_fn(expr)
-        
+
         # Variables defined within nested function
         # never escape outside.
         xuses -= xdefs
         xmods -= xdefs
-        
+
         # xnest implies xuses, so we don't really need to keep track of it
-        
+
         # Variable modified below is still modified
         xmods.each{|v| mods[v] = true}
 
@@ -369,11 +369,11 @@ class RLispCompiler
       # Ignore everything else
     end
   end
-   
+
   def extract_variables_used_qq(expr, defs, uses, nest, mods)
     return unless expr.is_a? Array
     return if expr == []
-    
+
     if (expr[0] == :unquote or expr[0] == :"unquote-splicing")
       raise "#{expr[0]} expects 1 argument" unless expr.size == 2
       extract_variables_used_expr(expr[1], defs, uses, nest, mods)
@@ -385,11 +385,11 @@ class RLispCompiler
   # Main code
   ##########################################
   attr_reader :globals
-  
+
   def locals
     @cg.locals
   end
-  
+
   def default_globals
     Hash.new{|ht,k|
       raise "No such global variable: #{k}"
@@ -424,7 +424,7 @@ class RLispCompiler
       :nil   => nil,
     })
   end
-  
+
   def initialize
     # @counter used only by tmp to generate temporaries
     @counter = 0
@@ -456,7 +456,7 @@ class RLispCompiler
     when :local_const
       # No temporaries needed for constants
       t = varx
-    when :closure  
+    when :closure
       t = tmp
       set_tmp t, "#{varx}.get"
     when :closure_simple
@@ -487,7 +487,7 @@ class RLispCompiler
       stmt "#{varx} = #{val}"
     when :local_const
       raise "Local constant variable #{var} cannot be modified"
-    when :closure  
+    when :closure
       stmt "#{varx}.set #{val}"
     when :closure_simple
       raise "Pass-by-value closure variable #{var} cannot be modified"
@@ -495,7 +495,7 @@ class RLispCompiler
       stmt "globals[#{var.inspect}] = #{val}"
     end
   end
-  
+
   def set_tmp(t, val)
     stmt "#{t} = #{val}"
   end
@@ -517,11 +517,11 @@ class RLispCompiler
     end
     raise "Don't know what to do with #{expr.class}: #{expr}" unless expr.is_a? Array
     #STDERR.puts "Compile: #{expr.debug_info.inspect_lisp} | #{expr.inspect_lisp}"
-    
+
     if expr.debug_info
       @cg.line = expr.debug_info[1]
     end
-    
+
     case expr[0]
     when :if
       expr = expr + [nil] if expr.size == 3
@@ -578,7 +578,7 @@ class RLispCompiler
         rest_arg = expr.pop
         expr.pop
       end
-      
+
       ts = expr.map{|a| compile(a)}
       rest_arg = compile(rest_arg) if rest_arg
       block_arg = compile(block_arg) if block_arg
@@ -596,7 +596,7 @@ class RLispCompiler
       end
     else
       raise "No clue what to do with: #{expr.inspect_lisp}" if (expr[0].is_a?(Symbol) and expr[0].special_form?)
-      
+
       block_arg = nil
       rest_arg = nil
       if expr[-2] == :"&" and expr.size >=3
@@ -607,7 +607,7 @@ class RLispCompiler
         rest_arg = expr.pop
         expr.pop
       end
-      
+
       ts = expr.map{|a| compile(a)}
       rest_arg = compile(rest_arg) if rest_arg
       block_arg = compile(block_arg) if block_arg
@@ -629,7 +629,7 @@ class RLispCompiler
         return [expr.inspect, false]
       end
     end
-    
+
     case expr[0]
     when :unquote, :"unquote-splicing"
       raise "#{expr[0]} expects 1 argument" unless expr.size == 2
@@ -661,7 +661,7 @@ class RLispCompiler
       proc_arg = nil
       args, proc_arg = args[0..-3], args[-1] if args[-2] == :"&"
       args, rest_arg = args[0..-3], args[-1] if args[-2] == :"."
-      
+
       [args, rest_arg, proc_arg]
     else
       raise "args in (fn args ...) must be a Symbol or a list, not #{args.class}"
@@ -678,7 +678,7 @@ class RLispCompiler
     nonref_local_vars = defs - ref_local_vars
     val_local_vars  = nonref_local_vars & mods
     cst_local_vars  = nonref_local_vars & mods - val_local_vars
-   
+
     parent_ref_vars = parent_locals.select{|v,cl| cl==:local or cl == :closure}.map{|v,cl| v}
     parent_val_vars = parent_locals.select{|v,cl| cl==:local_const or cl==:local_simple or cl == :closure_simple}.map{|v,cl| v}
 
@@ -687,7 +687,7 @@ class RLispCompiler
     val_closure_vars = closure_vars & parent_val_vars
     # Get rid of globals
     closure_vars = ref_closure_vars + val_closure_vars
-    
+
     n_args, rest_arg, proc_arg = parse_args(expr[1])
     args = n_args.map{|a| [a, ""]}
     args << [rest_arg, "*"] if rest_arg
@@ -708,14 +708,14 @@ class RLispCompiler
     val_local_vars   -= args_by_name
     ref_closure_vars -= args_by_name
     val_closure_vars -= args_by_name
-    
-    local_vars = 
+
+    local_vars =
       args.map{|a, tp, cls| [a, cls]} +
       ref_local_vars.map{|v|[v, :local]} +
       val_local_vars.map{|v|[v, :local_simple]} +
       ref_closure_vars.map{|v| [v, :closure] } +
       val_closure_vars.map{|v| [v, :closure_simple]}
-    
+
     return [args, local_vars, closure_vars, !!rest_arg, !!proc_arg]
   end
 
@@ -725,7 +725,7 @@ class RLispCompiler
     debug_fname = (expr.debug_info||[])[3]
 
     args, local_vars, closure_vars, has_rest_arg, has_proc_arg = compute_var_info(expr)
-     
+
     closure_str = ["globals", *closure_vars.map{|a| a.mangle}].join(', ')
     fname = @cg.function(debug_fname, closure_str, args, has_rest_arg, has_proc_arg) {
       local_vars.each{|v,cls| local_var v, cls}
@@ -736,10 +736,10 @@ class RLispCompiler
     res = "#{fname}(#{call_args})"
 
     @cg.pop_frame
-    
+
     return res
   end
-  
+
   def local_var(var, cls)
     if cls == :local_arg
       # :local_arg nad :local differ only in initialization
@@ -755,7 +755,7 @@ class RLispCompiler
       locals[var] = cls
     end
   end
-  
+
   def stmt(c)
     @cg << c
   end
@@ -775,21 +775,21 @@ class RLispCompiler
   def run_file(file_path, recompile=false)
     # If the path is not absolute, and it doesn't exist in ./
     # then search in other locations
-    if file_path !~ /\A\// and !File.exists?(file_path)
+    if file_path !~ /\A\// and !File.exist?(file_path)
       RLISP_PATH.each{|path|
-        if File.exists?(path + "/" + file_path)
+        if File.exist?(path + "/" + file_path)
           file_path = path + "/" + file_path
           break
         end
       }
     end
-  
+
     compiled_file = "#{file_path}c"
 
-    unless File.exists?(compiled_file) and File.mtime(compiled_file) >= File.mtime(file_path)
+    unless File.exist?(compiled_file) and File.mtime(compiled_file) >= File.mtime(file_path)
       recompile = true
     end
-    
+
     if recompile
       parser = RLispGrammar.new(File.open(file_path), file_path)
       compiled_record = ""
@@ -815,7 +815,7 @@ class RLispCompiler
       eval(expr, binding, file_path)
     end
   end
-  
+
   def run(expr, file_name=nil)
     compiled = with_code_generator("RLispC#{rand(10000000)}") do
       expr = precompile(expr)
@@ -846,7 +846,7 @@ class RLispCompiler
       parser.each_expr{|expr| run(expr, file_name)}
     end
   end
-  
+
   def rlvm_compile(expr, test_id)
     with_code_generator(test_id) do
       expr = precompile(expr)
@@ -871,7 +871,7 @@ def main
 
   ARGV.options{|opts|
     opts.banner = "Usage: #{$0} [OPTIONS] program.rl -- [PROGRAM OPTIONS]"
-  
+
     opts.on("-h", "--help", "show this message") {
       puts opts
       exit
@@ -907,7 +907,7 @@ def main
   end
 
   rlisp_compiler = RLispCompiler.new
-  
+
   rlisp_compiler.run_file(stdlib_file, recompile) unless nostdlib
 
   interactive = (STDIN.tty? && input_file.nil?) if interactive == :maybe
@@ -915,7 +915,7 @@ def main
   if input_file and not fh
     fh = File.open(input_file)
   end
-  
+
   if input_file
     rlisp_compiler.repl(fh, interactive, input_file||'STDIN')
   else
