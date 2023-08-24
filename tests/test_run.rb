@@ -32,14 +32,13 @@ class Test_RLisp_Run < Minitest::Test
   # Line numbers are going to be broken, but getting at least
   # filenames right is already helpful
   #
-  # This varies wildly with ruby version. 2.3.0 test is here:
+  # This varies wildly with ruby version. 3.2.2 test is here:
   def test_backtrace
     actual_output = `#{bin_rlisp} tests/backtrace.rl 2>&1`
 
-    entries = actual_output.split(/\n/).reject{|e| e =~ /rlisp\.rb|rlisp_grammar\.rb|\d+ levels/}
+    entries = actual_output.split(/\n/).reject{|e| e =~ /rlisp\.rb|rlisp_grammar\.rb|\d+ levels|default_globals/}
 
     assert_equal(6, entries.size, "There should be 6 relevant entries in backtrace")
-
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[0])
     assert_match(/\tfrom tests\/backtrace\.rl:\d+/, entries[1])
     assert_match(/\tfrom \.\/src\/stdlib\.rl:\d+/, entries[2])
