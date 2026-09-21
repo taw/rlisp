@@ -459,6 +459,19 @@ class Test_Backtraces < Minitest::Test
     @rlisp.run_file("stdlib.rl")
   end
 
+  # Ruby's Kernel#backtrace format isn't stable across versions: the quoting
+  # around the method name changed (`foo' vs 'foo'), and newer Rubies
+  # qualify the label with the defining class/module (Class#foo, Class.foo)
+  # instead of a bare method name. Normalize both away so these tests only
+  # depend on the file, line, and method name RLisp itself reports.
+  def normalize_backtrace_line(line)
+    if line =~ /\A(.+:\d+):in\s+[`']((?:.*[#.])?([^'`]+))['`]\z/
+      "#{$1}:in `#{$3}'"
+    else
+      line
+    end
+  end
+
   def assert_backtrace(code, expected)
     begin
       @rlisp.run(RLispGrammar.new(code).expr, "example.rl")
@@ -466,8 +479,9 @@ class Test_Backtraces < Minitest::Test
       bt = e.backtrace
       # A lot of these are due to 1.8 vs 1.9 differences
       bt = bt.select{|line|
-        line !~ %r[test/unit|src/rlisp\.rb|test_all\.rb|test_rlisp\.rb|`\[\]'|`call'|`default'|`yield'|lib/minitest]
+        line !~ %r[test/unit|src/rlisp\.rb|test_all\.rb|test_rlisp\.rb|[`']\[\]'|[`']call'|[`']default'|[`']yield'|lib/minitest]
       }.map{|line| line.sub("block in ", "")}
+      bt = bt.map{|line| normalize_backtrace_line(line)}
       assert_equal(expected, bt, <<EOF)
 Full backtrace:
 #{e}

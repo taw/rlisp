@@ -230,10 +230,15 @@ class Test_RLisp_Run < Minitest::Test
   end
 
   def test_hash
-    # Can be either {:a=>6, :b=>4} or {:b=>4, :a=>6}
-    actual_output = `#{bin_rlisp} tests/hash.rl`.sub("{:b=>4, :a=>6}", "{:a=>6, :b=>4}")
-    expected_output = "10\n{:a=>6, :b=>4}\n"
-    assert_equal(expected_output, actual_output)
+    # Hash#inspect's format isn't stable across Ruby versions (`{:a=>6}` vs
+    # `{a: 6}`), and key order isn't guaranteed either, so parse out the
+    # key/value pairs instead of comparing the rendered string verbatim.
+    actual_output = `#{bin_rlisp} tests/hash.rl`
+    first_line, hash_line = actual_output.lines
+    assert_equal("10\n", first_line)
+    pairs = hash_line.scan(/:?(\w+)\s*(?:=>|:)\s*(\d+)/)
+    actual_hash = Hash[pairs.map{|k, v| [k, v.to_i]}]
+    assert_equal({"a" => 6, "b" => 4}, actual_hash)
   end
 
   def test_iter
